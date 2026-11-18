@@ -1,0 +1,99 @@
+/* ==============================================
+   ESTILOS PERSONALIZADOS - Biblioteca UNCP
+   ============================================== */
+
+/* Variables ya definidas en base.html, pero podemos sobreescribir aquí */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Hover effects para tarjetas */
+.card-libro {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.card-libro:nth-child(1) { animation-delay: 0.1s; }
+.card-libro:nth-child(2) { animation-delay: 0.2s; }
+.card-libro:nth-child(3) { animation-delay: 0.3s; }
+.card-libro:nth-child(4) { animation-delay: 0.4s; }
+
+/* Focus states para accesibilidad */
+.form-control:focus,
+select.form-select:focus {
+    border-color: #D6AC53;
+    box-shadow: 0 0 0 3px rgba(214, 172, 83, 0.15);
+    outline: none;
+}
+
+/* Badge styles personalizados */
+.badge-uncp {
+    background: rgba(22, 75, 53, 0.1);
+    color: #164B35;
+    border: 1px solid rgba(22, 75, 53, 0.3);
+}
+
+/* Table styles para dashboards */
+.table-custom thead th {
+    background-color: #F5F7F6;
+    border-bottom: 2px solid #EDF2F7;
+    color: #164B35;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #EDF2F7;
+}
+
+/* Alertas personalizadas */
+.alerta-exito {
+    animation: shake 0.5s ease-in-out;
+}
+
+.alerta-error {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: transform(-1px, -2px) rotate(-1deg); }
+    20% { transform: transform(1px, 3px) rotate(1deg); }
+    30% { transform: transform(-1px, -1px) rotate(0deg); }
+    40% { transform: transform(-3px, 1px) rotate(-1deg); }
+    50% { transform: transform(1px, 2px) rotate(1deg); }
+    60% { transform: transform(1px, -1px) rotate(0deg); }
+    70% { transform: transform(-1px, -3px) rotate(-1deg); }
+    80% { transform: transform(1px, 1px) rotate(1deg); }
+    90% { transform: transform(-1px, 2px) rotate(-1deg); }
+    100% { transform: transform(1px, 0px) rotate(0deg); }
+}

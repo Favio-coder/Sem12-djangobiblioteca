@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Catálogo de Libros - Biblioteca UNCP{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-book me-2 text-primary-dark"></i>Catálogo de Libros</h2>
+            
+            <!-- Formulario de búsqueda -->
+            <div class="search-box">
+                <form method="get" action="{% url 'catalogo:lista_libros' %}" class="row g-3">
+                    <div class="col-12 col-md-6">
+                        {{ form_busqueda.query }}
+                    </div>
+                    <div class="col-12 col-md-3">
+                        {{ form_busqueda.por }}
+                    </div>
+                    <div class="col-12 col-md-3">
+                        {{ form_busqueda.categoria }}
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary-uncp w-100">
+                            <i class="fas fa-search me-2"></i>Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de libros -->
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for libro in page_obj %}
+        <div class="col">
+            <div class="card card-libro h-100 shadow-sm">
+                {% if libro.imagen %}
+                <img src="{{ libro.imagen.url }}"
+                    class="card-img-top" alt="{{ libro.titulo }}"
+                    style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'catalogo/images/placeholder-libro.jpg' %}"
+                    class="card-img-top" alt="{{ libro.titulo }}"
+                    style="height: 200px; object-fit: cover; background: #EDF2F7;">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title line-clamp-2">
+                        <a href="{{ libro.get_absolute_url }}" class="text-primary-dark hover-text-primary-dark">
+                            {{ libro.titulo }}
+                        </a>
+                    </h6>
+                    <p class="card-text small text-muted line-clamp-1">
+                        {{ libro.autor }}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            <small>
+                                {{ libro.get_estatus_disponibilidad }}
+                            </small>
+                        </span>
+                        <small class="text-muted">
+                            {{ libro.categoria.nombre }} | {{ libro.fecha_publicacion|date:"Y" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="estado-vacio text-center py-5">
+                <i class="fas fa-search fa-3x mb-3 opacity-50"
+                    style="color: #a0aec0;"></i>
+                <h4 class="text-muted">No se encontraron libros</h4>
+                <p class="text-muted">Intenta con diferentes términos de búsqueda o verifica la ortografía.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-4 text-center">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm btn-outline-primary me-2">
+            Anterior
+        </a>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm btn-outline-primary ms-2">
+            Siguiente
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>

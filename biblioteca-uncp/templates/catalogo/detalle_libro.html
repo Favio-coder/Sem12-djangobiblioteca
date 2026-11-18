@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Detalle del Libro: {{ libro.titulo }} - Biblioteca UNCP{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 col-md-3">
+                {% if libro.imagen %}
+                <img src="{{ libro.imagen.url }}"
+                    class="img-fluid rounded"
+                    alt="{{ libro.titulo }}"
+                    style="height: 400px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light rounded"
+                    style="height: 400px; display: flex; align-items: center; justify-content: center; color: #a0aec0;">
+                    <i class="fas fa-book-open fa-3x"></i>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-9">
+                <h1 class="mb-3">{{ libro.titulo }}</h1>
+                <p class="text-muted mb-2"><i class="fas fa-user me-1"></i> {{ libro.autor }}</p>
+                <p class="text-muted mb-2"><i class="fas fa-folder me-1"></i>
+                    {{ libro.categoria.nombre if libro.categoria | default:"Sin categoría" }}</p>
+                
+                {% if libro.fecha_publicacion %}
+                <p class="text-muted mb-2"><i class="fas fa-calendar me-1"></i>
+                    Publicado: {{ libro.fecha_publicacion|date:"F Y" }}</p>
+                {% endif %}
+
+                {% if libro.resumen %}
+                <p class="mb-4">{{ libro.resumen|truncatewords:150 }}</p>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <span class="badge badge-uncp">
+                            {{ libro.get_estatus_disponibilidad }}
+                        </span>
+                    </div>
+                    <div class="col-12 col-md-6 text-end">
+                        {% if request.user.is_authenticated %}
+                        {% if user.perfil.rol == 'bibliotecario' or user.is_superuser %}
+                        <a href="{% url 'catalogo:bibliotecario_editar_libro' libro.pk %}"
+                           class="btn btn-golden btn-sm">
+                            <i class="fas fa-edit me-1"></i>Editar
+                        </a>
+                        {% endif %}
+                        {% if user.perfil.rol == 'estudiante' %}
+                        {% if libro.disponible %}
+                        <a href="{% url 'catalogo:estudiante_solicitar_prestamo' libro.pk %}"
+                           class="btn btn-primary-uncp btn-sm">
+                            <i class="fas fa-file-alt me-1"></i>Solicitar préstamo
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary btn-sm disabled"
+                            style="opacity: 0.7;">
+                            <i class="fas fa-ban me-1"></i>No disponible
+                        </button>
+                        {% endif %}
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'catalogo:login' %}" class="btn btn-link text-muted">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login para solicitar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Libros relacionados -->
+                {% if relacionados %}
+                <hr class="my-4">
+                <h4 class="mb-3"><i class="fas fa-link me-2 text-primary-dark"></i>Libros Relacionados</h4>
+                <div class="row g-3">
+                    {% for lib in relacionados %}
+                    <div class="col-6 col-md-4">
+                        <div class="card card-libro shadow-sm">
+                            {% if lib.imagen %}
+                            <img src="{{ lib.imagen.url }}"
+                                class="card-img-top" alt="{{ lib.titulo }}"
+                                style="height: 150px; object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'catalogo/images/placeholder-libro.jpg' %}"
+                                class="card-img-top" alt="{{ lib.titulo }}"
+                                style="height: 150px; object-fit: cover; background: #EDF2F7;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title small-line-height">
+                                    <a href="{{ lib.get_absolute_url }}"
+                                       class="text-primary-dark hover-text-primary-small">
+                                        {{ lib.titulo }}
+                                    </a>
+                                </h6>
+                                <p class="card-text text-muted small-line-height">
+                                    {{ lib.autor }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted small">No hay libros relacionados.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
