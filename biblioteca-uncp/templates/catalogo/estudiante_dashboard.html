@@ -1,190 +1,76 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Dashboard Estudiantil - Biblioteca UNCP{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}Mi dashboard · Biblioteca UNCP{% endblock %}
 {% block content %}
-<section class="py-4">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fas fa-tachometer-alt me-2 text-primary-dark"></i>Dashboard</h2>
-        </div>
-
-        <!-- Estadísticas rápidas -->
-        <div class="row mb-4">
-            <!-- Tarjeta: Total de préstamos -->
-            <div class="col-12 col-md-4">
-                <div class="card text-white bg-primary-dark mb-3 card-hover-effect">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="fas fa-list me-2"></i>Total Préstamos</h5>
-                    </div>
-                    <div class="card-body">
-                        <h2 class="card-text display-6">{{ total_prestamos }}</h2>
-                        <p class="small text-white-opacity">Préstamos registrados</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Tarjeta: Activos -->
-            <div class="col-12 col-md-4">
-                <div class="card text-success bg-primary-secondary mb-3 card-hover-effect">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="fas fa-book-open me-2"></i>Activos</h5>
-                    </div>
-                    <div class="card-body">
-                        <h2 class="card-text display-6 text-success">{{ prestamos_activos }}</h2>
-                        <p class="small text-white-opacity">Préstamos en curso</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Tarjeta: Devueltos -->
-            <div class="col-12 col-md-4">
-                <div class="card text-info bg-accent-gold mb-3 card-hover-effect">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="fas fa-check me-2"></i>Devueltos</h5>
-                    </div>
-                    <div class="card-body">
-                        <h2 class="card-text display-6 text-info">{{ prestamos_devueltos }}</h2>
-                        <p class="small text-white-opacity">Devoluciones completadas</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mis préstamos -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0"><i class="fas fa-folder me-2"></i>Mis Préstamos</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        {% if mis_prestamos %}
-                        <div class="table-responsive">
-                            <table class="table table-custom table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Libro</th>
-                                        <th>Fecha Préstamo</th>
-                                        <th>Devuelta</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for prestamo in mis_prestamos %}
-                                    <tr>
-                                        <td>
-                                            <a href="{{ libro.get_absolute_url }}">
-                                                {{ prestamo.libro.titulo }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{ prestamo.fecha_prestamo|date:"d/m/Y" }}
-                                        </td>
-                                        <td>
-                                            {% if prestamo.devuelto %}
-                                            <span class="badge bg-success">Sí</span>
-                                            {% else %}
-                                            <span class="badge bg-warning text-dark">No</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if prestamo.devuelto %}
-                                            <span class="text-success">Devuelto</span>
-                                            {% elif prestamo.esta_vencido %}
-                                            <span class="text-danger">Vencido</span>
-                                            {% else %}
-                                            <span class="text-primary">En curso</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if not prestamo.devuelto %}
-                                            <a href="#" class="btn btn-sm btn-outline-primary"
-                                               onclick="confirmDevolver({{ prestamo.id }})">
-                                               <i class="fas fa-check me-1"></i>Marcar devuelto
-                                           </a>
-                                            {% else %}
-                                            <span class="text-muted">Devuelto</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4">
-                                            <div class="estado-vacio">
-                                                <i class="fas fa-folder-open fa-2x mb-3 opacity-50"
-                                                   style="color: #a0aec0;"></i>
-                                                <p class="text-muted">No tienes préstamos activos</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% else %}
-                        <div class="text-center py-5">
-                            <div class="estado-vacio">
-                                <i class="fas fa-folder-open fa-2x mb-3 opacity-50"
-                                   style="color: #a0aec0;"></i>
-                                <p class="text-muted">No tienes préstamos registrados</p>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
+<section class="dashboard-page">
+  <div class="container">
+    <div class="dashboard-header">
+      <div>
+        <span class="eyebrow">Tu espacio</span>
+        <h1>Hola, {{ user.username }}.</h1>
+        <p>Este es el resumen de tu actividad en la biblioteca.</p>
+      </div>
+      <a class="button button-primary" href="{% url 'catalogo:lista_libros' %}"
+        >Explorar libros</a
+      >
     </div>
+    <div class="dashboard-stats">
+      <div class="dash-stat">
+        <strong>{{ total_prestamos }}</strong><span>Préstamos registrados</span>
+      </div>
+      <div class="dash-stat">
+        <strong>{{ prestamos_activos }}</strong><span>Préstamos activos</span>
+      </div>
+      <div class="dash-stat">
+        <strong>{{ prestamos_devueltos }}</strong><span>Libros devueltos</span>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Mis préstamos</h2>
+        <a class="link-arrow" href="{% url 'catalogo:mis_prestamos' %}"
+          >Ver historial →</a
+        >
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Libro</th>
+              <th>Fecha</th>
+              <th>Devolución</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if mis_prestamos %}{% for prestamo in mis_prestamos %}
+            <tr>
+              <td>
+                <a href="{% url 'catalogo:detalle_libro' prestamo.libro.pk %}"
+                  >{{ prestamo.libro.titulo|default:'Libro sin título' }}</a
+                >
+              </td>
+              <td>{{ prestamo.fecha_prestamo|date:'d/m/Y' }}</td>
+              <td>{{ prestamo.fecha_devolucion_esperada|date:'d/m/Y' }}</td>
+              <td>
+                <span class="status {% if prestamo.esta_vencido %}status-unavailable{% endif %}">
+                  {% if prestamo.devuelto %}Devuelto{% else %}{% if prestamo.esta_vencido %}Vencido{% else %}En curso{% endif %}{% endif %}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}{% else %}
+            <tr>
+              <td colspan="4">
+                <div class="empty-state">
+                  <strong>Aún no tienes préstamos</strong>Explora el catálogo
+                  para encontrar tu próxima lectura.
+                </div>
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </section>
-
-<!-- Modal para confirmar devolución -->
-<div class="modal fade" id="modalDevolver" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <p>¿Estás seguro de marcar este préstamo como devuelto?</p>
-                <input type="hidden" id="prestamoId">
-                <div class="modal-actions mt-3">
-                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-success" id="confirmDevolverBtn">Sí, marcar devuelto</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function confirmDevolver(prestamoId) {
-    $('#prestamoId').val(prestamoId);
-    const modal = new bootstrap.Modal(document.getElementById('modalDevolver'));
-    modal.show();
-}
-
-// Manejar confirmación del modal
-document.getElementById('confirmDevolverBtn').addEventListener('click', function() {
-    const prestamoId = $('#prestamoId').val();
-    // Enviar solicitud AJAX para marcar como devuelto
-    fetch(`/api/prestamo/marcar-devuelto/${prestamoId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCSRFToken(),
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert('Error: ' + data.error);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-});
-
-// Helper para obtener token CSRF
-function getCSRFToken() {
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-    return csrfToken ? csrfToken.value : '';
-}
-</script>
+{% endblock %}

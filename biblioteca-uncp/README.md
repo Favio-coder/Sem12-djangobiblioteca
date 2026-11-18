@@ -7,8 +7,7 @@ Sistema de gestión bibliotecaria universitaria para la Universidad Nacional del
 - Python 3.12
 - Django 5.1.6
 - SQLite (desarrollo)
-- Bootstrap 5 (frontend)
-- HTML5, CSS3, JavaScript
+- HTML5, CSS3 moderno y JavaScript nativo (frontend autocontenido)
 - Django Templates, Forms, ModelForms
 - Django Admin
 - Middleware personalizado
@@ -83,6 +82,14 @@ Se han creado usuarios de demostración tras ejecutar `python manage.py poblar_d
 - `python manage.py poblar_datos`: Poblar base de datos con datos de demostración
 - `python manage.py check`: Verificar configuración del sistema
 - `python manage.py test`: Ejecutar pruebas automatizadas
+
+## Rediseño UI/UX
+
+La interfaz fue rediseñada sobre las plantillas Django existentes, sin sustituir la lógica del proyecto por una SPA. El nuevo sistema visual usa la identidad verde institucional (`#164B35`), verde profundo, dorado y fondo claro; incorpora una navegación accesible con menú móvil, hero de dos columnas, buscador, estadísticas basadas en el contexto de Django, tarjetas de libros, filtros, detalle, formularios de autenticación y dashboards coherentes.
+
+Los estilos y scripts viven en `static/catalogo/css/styles.css` y `static/catalogo/js/app.js`. La ilustración local de biblioteca y el recurso alternativo están en `static/img/`; no se depende de imágenes externas para renderizar la interfaz. El layout fue comprobado en 390, 768, 1366 y 1920 px sin desbordamiento horizontal.
+
+Las capturas reales del rediseño se encuentran en `capturas/09_diseno_responsive/`, incluyendo inicio, catálogo, login, registro, ambos dashboards, detalle y prueba responsive.
 
 ## Capturas de Pantalla
 Todas las evidencias se encuentran en la carpeta `capturas/` organizada por fases:

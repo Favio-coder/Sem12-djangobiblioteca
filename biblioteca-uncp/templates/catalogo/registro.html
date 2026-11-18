@@ -1,97 +1,45 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Registro de Usuario - Biblioteca UNCP{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}Crear cuenta · Biblioteca UNCP{% endblock %}
 {% block content %}
-<section class="py-5 py-lg-8">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-10 col-md-8 col-lg-6">
-                <div class="card shadow-sm border-0 rounded-3" style="max-width: 500px;">
-                    <div class="card-body p-5">
-                        <h2 class="card-title text-center mb-4">
-                            <i class="fas fa-user-plus text-primary-dark me-2"></i>Regístrate
-                        </h2>
-                        
-                        {% if messages %}
-                        <div class="mb-3">
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}" role="alert">
-                                {{ message }}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <form method="POST" action="{% url 'catalogo:registro' %}" novalidate>
-                            {% csrf_token %}
-                            
-                            <div class="mb-3">
-                                <label for="id_username" class="form-label-uncp">
-                                    <i class="fas fa-user me-2"></i>Nombre de usuario
-                                </label>
-                                {{ formulario.username }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.username.errors }}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_email" class="form-label-uncp">
-                                    <i class="fas fa-envelope me-2"></i>Correo electrónico
-                                </label>
-                                {{ formulario.email }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.email.errors }}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_password1" class="form-label-uncp">
-                                    <i class="fas fa-lock me-2"></i>Contraseña
-                                </label>
-                                {{ formulario.password1 }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.password1.errors }}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_password2" class="form-label-uncp">
-                                    <i class="fas fa-lock me-2"></i>Repita contraseña
-                                </label>
-                                {{ formulario.password2 }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.password2.errors }}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_rol" class="form-label-uncp">
-                                    <i class="fas fa-user-tag me-2"></i>Rol
-                                </label>
-                                {{ formulario.rol }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.rol.errors }}
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary-uncp">
-                                    <i class="fas fa-user-check me-2"></i>Crear Cuenta
-                                </button>
-                            </div>
-                            
-                            <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    ¿Ya tienes cuenta? <a href="{% url 'catalogo:login' %}" class="text-primary-dark">Iniciar sesión</a>
-                                </small>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section class="auth-page">
+  <div class="container">
+    <div class="auth-layout">
+      <aside class="auth-aside">
+        <span class="eyebrow" style="color: var(--gold)"
+          >Tu espacio de aprendizaje</span
+        >
+        <h1>Empieza a descubrir.</h1>
+        <p>
+          Crea tu cuenta y solicita libros, consulta tus préstamos y encuentra
+          nuevas ideas para tus proyectos.
+        </p>
+      </aside>
+      <div class="auth-form">
+        <h2>Crear una cuenta</h2>
+        <p class="auth-subtitle">
+          Completa tus datos para unirte a la biblioteca.
+        </p>
+        <form class="form-stack" method="post" novalidate>
+          {% csrf_token %}{% for field in formulario %}
+          <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<span class="help-text"
+              >{{ field.help_text }}</span
+            >{% endif %}{% if field.errors %}
+            <div class="errorlist">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}<button class="button button-primary" type="submit">
+            Crear mi cuenta →
+          </button>
+        </form>
+        <p class="auth-subtitle" style="margin-top: 22px; margin-bottom: 0">
+          ¿Ya tienes cuenta?
+          <a class="link-arrow" href="{% url 'catalogo:login' %}"
+            >Inicia sesión</a
+          >
+        </p>
+      </div>
     </div>
+  </div>
 </section>
+{% endblock %}

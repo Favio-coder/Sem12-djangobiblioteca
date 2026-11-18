@@ -1,67 +1,66 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Iniciar Sesión - Biblioteca UNCP{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión · Biblioteca UNCP{% endblock %}
 {% block content %}
-<section class="py-5 py-lg-8">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-10 col-md-8 col-lg-6">
-                <div class="card shadow-sm border-0 rounded-3" style="max-width: 500px;">
-                    <div class="card-body p-5">
-                        <h2 class="card-title text-center mb-4">
-                            <i class="fas fa-sign-in-alt text-primary-dark me-2"></i>Iniciar Sesión
-                        </h2>
-                        
-                        {% if messages %}
-                        <div class="mb-3">
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}" role="alert">
-                                {{ message }}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <form method="POST" action="{% url 'catalogo:login' %}" novalidate>
-                            {% csrf_token %}
-                            
-                            <div class="mb-3">
-                                <label for="id_username" class="form-label-uncp">
-                                    <i class="fas fa-user me-2"></i>Nombre de usuario
-                                </label>
-                                {{ formulario.username }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.username.errors }}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="id_password" class="form-label-uncp">
-                                    <i class="fas fa-lock me-2"></i>Contraseña
-                                </label>
-                                {{ formulario.password1 }}
-                                <div class="invalid-feedback">
-                                    {{ formulario.password1.errors }}
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary-uncp">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Entrar
-                                </button>
-                            </div>
-                            
-                            <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    No tienes cuenta? <a href="{% url 'catalogo:registro' %}" class="text-primary-dark">Regístrate</a>
-                                </small>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<section class="auth-page">
+  <div class="container">
+    <div class="auth-layout">
+      <aside class="auth-aside">
+        <span class="eyebrow" style="color: var(--gold)"
+          >Bienvenido de nuevo</span
+        >
+        <h1>Vuelve a tus lecturas.</h1>
+        <p>
+          Accede a tus préstamos, guarda tu recorrido y sigue explorando el
+          catálogo de la Biblioteca UNCP.
+        </p>
+      </aside>
+      <div class="auth-form">
+        <h2>Iniciar sesión</h2>
+        <p class="auth-subtitle">Ingresa tus datos para continuar.</p>
+        <form class="form-stack" method="post" novalidate>
+          {% csrf_token %}
+          <div class="field">
+            <label for="id_username">Nombre de usuario</label
+            ><input
+              class="form-control"
+              id="id_username"
+              name="username"
+              required
+              autofocus
+            />{% if formulario.username.errors %}
+            <div class="errorlist">{{ formulario.username.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="field">
+            <label for="id_password">Contraseña</label>
+            <div style="display: flex; gap: 8px">
+              <input
+                class="form-control"
+                id="id_password"
+                name="password"
+                type="password"
+                required
+              /><button
+                class="button button-outline"
+                type="button"
+                data-password-toggle="id_password"
+              >
+                Mostrar
+              </button>
             </div>
-        </div>
+          </div>
+          <button class="button button-primary" type="submit">
+            Entrar a mi cuenta →
+          </button>
+        </form>
+        <p class="auth-subtitle" style="margin-top: 22px; margin-bottom: 0">
+          ¿Aún no tienes cuenta?
+          <a class="link-arrow" href="{% url 'catalogo:registro' %}"
+            >Regístrate</a
+          >
+        </p>
+      </div>
     </div>
+  </div>
 </section>
+{% endblock %}

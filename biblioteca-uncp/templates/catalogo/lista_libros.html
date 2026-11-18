@@ -1,98 +1,65 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Catálogo de Libros - Biblioteca UNCP{% endblock %}
-
+{% extends 'base.html' %}
+{% block title %}Catálogo · Biblioteca UNCP{% endblock %}
 {% block content %}
-<section class="py-4">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fas fa-book me-2 text-primary-dark"></i>Catálogo de Libros</h2>
-            
-            <!-- Formulario de búsqueda -->
-            <div class="search-box">
-                <form method="get" action="{% url 'catalogo:lista_libros' %}" class="row g-3">
-                    <div class="col-12 col-md-6">
-                        {{ form_busqueda.query }}
-                    </div>
-                    <div class="col-12 col-md-3">
-                        {{ form_busqueda.por }}
-                    </div>
-                    <div class="col-12 col-md-3">
-                        {{ form_busqueda.categoria }}
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary-uncp w-100">
-                            <i class="fas fa-search me-2"></i>Buscar
-                        </button>
-                    </div>
-                </form>
-            </div>
+<section class="catalog-page">
+  <div class="container">
+    <span class="eyebrow">Explora la colección</span>
+    <h1 class="page-title">Catálogo de libros</h1>
+    <p class="page-lead">Busca una lectura por título, autor o categoría.</p>
+    <div class="filter-panel">
+      <form class="filter-form" method="get">
+        <div class="field">
+          <label for="id_query">Buscar</label>{{ form_busqueda.query }}
         </div>
+        <div class="field">
+          <label for="id_por">Buscar por</label>{{ form_busqueda.por }}
+        </div>
+        <div class="field">
+          <label for="id_categoria">Categoría</label>{{ form_busqueda.categoria }}
+        </div>
+        <button class="button button-primary" type="submit">Buscar</button>
+      </form>
     </div>
-
-    <!-- Grid de libros -->
-    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-        {% for libro in page_obj %}
-        <div class="col">
-            <div class="card card-libro h-100 shadow-sm">
-                {% if libro.imagen %}
-                <img src="{{ libro.imagen.url }}"
-                    class="card-img-top" alt="{{ libro.titulo }}"
-                    style="height: 200px; object-fit: cover;">
-                {% else %}
-                <img src="{% static 'catalogo/images/placeholder-libro.jpg' %}"
-                    class="card-img-top" alt="{{ libro.titulo }}"
-                    style="height: 200px; object-fit: cover; background: #EDF2F7;">
-                {% endif %}
-                <div class="card-body">
-                    <h6 class="card-title line-clamp-2">
-                        <a href="{{ libro.get_absolute_url }}" class="text-primary-dark hover-text-primary-dark">
-                            {{ libro.titulo }}
-                        </a>
-                    </h6>
-                    <p class="card-text small text-muted line-clamp-1">
-                        {{ libro.autor }}
-                    </p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>
-                            <small>
-                                {{ libro.get_estatus_disponibilidad }}
-                            </small>
-                        </span>
-                        <small class="text-muted">
-                            {{ libro.categoria.nombre }} | {{ libro.fecha_publicacion|date:"Y" }}
-                        </small>
-                    </div>
-                </div>
-            </div>
+    <div class="book-grid book-grid-catalog">
+      {% for libro in page_obj %}
+      <article class="book-card">
+        <div class="book-cover"><span>{{ libro.titulo|default:'Libro sin título' }}</span></div>
+        <div class="book-body">
+          <h3>{{ libro.titulo|default:'Libro sin título'|truncatechars:48 }}</h3>
+          <p class="book-author">{{ libro.autor }}</p>
+          <div class="book-meta">
+            <span
+              class="status {% if not libro.disponible %}status-unavailable{% endif %}"
+              >{{ libro.estatus_disponibilidad }}</span
+            ><a
+              class="link-arrow"
+              href="{% url 'catalogo:detalle_libro' libro.pk %}"
+              >Detalles →</a
+            >
+          </div>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="estado-vacio text-center py-5">
-                <i class="fas fa-search fa-3x mb-3 opacity-50"
-                    style="color: #a0aec0;"></i>
-                <h4 class="text-muted">No se encontraron libros</h4>
-                <p class="text-muted">Intenta con diferentes términos de búsqueda o verifica la ortografía.</p>
-            </div>
-        </div>
-        {% endfor %}
+      </article>
+      {% empty %}
+      <div class="empty-state">
+        <strong>No se encontraron libros</strong>Prueba con otros términos o
+        cambia los filtros.
+      </div>
+      {% endfor %}
     </div>
-
-    <!-- Paginación -->
     {% if page_obj.has_other_pages %}
-    <div class="mt-4 text-center">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm btn-outline-primary me-2">
-            Anterior
-        </a>
-        {% endif %}
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm btn-outline-primary ms-2">
-            Siguiente
-        </a>
-        {% endif %}
-    </div>
+    <nav class="pagination" aria-label="Paginación">
+      {% if page_obj.has_previous %}<a
+        href="?page={{ page_obj.previous_page_number }}&query={{ query }}&por={{ por }}"
+        >← Anterior</a
+      >{% endif %}<span
+        >Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages
+        }}</span
+      >{% if page_obj.has_next %}<a
+        href="?page={{ page_obj.next_page_number }}&query={{ query }}&por={{ por }}"
+        >Siguiente →</a
+      >{% endif %}
+    </nav>
     {% endif %}
+  </div>
 </section>
 {% endblock %}

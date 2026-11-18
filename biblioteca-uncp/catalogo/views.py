@@ -131,9 +131,9 @@ def login_view(request):
         if user is not None:
             login(request, user)
             # Determinar redirección basada en el rol
-            perfil, created = user.perfil.get_or_create()
+            perfil, created = PerfilUsuario.objects.get_or_create(user=user)
             if perfil.rol == 'bibliotecario':
-                return redirect('catalogo:admin_dashboard')
+                return redirect('catalogo:bibliotecario_dashboard')
             else:
                 return redirect('catalogo:estudiante_dashboard')
         else:
@@ -153,7 +153,7 @@ def logout_view(request):
 @login_required
 def estudiante_dashboard(request):
     """Dashboard para estudiantes."""
-    perfil, created = request.user.perfil.get_or_create()
+    perfil, created = PerfilUsuario.objects.get_or_create(user=request.user)
 
     # Obtener préstamos del usuario
     mis_prestamos = Prestamo.objects.filter(
@@ -180,7 +180,7 @@ def estudiante_dashboard(request):
 def estudiante_solicitar_prestamo(request, libro_pk):
     """Vista para que un estudiante solicite un préstamo."""
     libro = get_object_or_404(Libro, pk=libro_pk)
-    perfil, created = request.user.perfil.get_or_create()
+    perfil, created = PerfilUsuario.objects.get_or_create(user=request.user)
 
     # Verificar que el estudiante pueda solicitar
     if perfil.rol != 'estudiante':
@@ -233,7 +233,7 @@ def estudiante_solicitar_prestamo(request, libro_pk):
 @login_required
 def estudiante_mis_prestamos(request):
     """Vista para ver los préstamos del estudiante."""
-    perfil, created = request.user.perfil.get_or_create()
+    perfil, created = PerfilUsuario.objects.get_or_create(user=request.user)
     mis_prestamos = Prestamo.objects.filter(
         usuario=request.user
     ).order_by('-fecha_prestamo')
@@ -247,10 +247,13 @@ def estudiante_mis_prestamos(request):
 
 
 @login_required
-@permission_required('catalogo.can_view_statistics', raise_exception=True)
 def bibliotecario_dashboard(request):
     """Dashboard para bibliotecarios con estadísticas."""
     from django.db.models import Count
+
+    perfil, _ = PerfilUsuario.objects.get_or_create(user=request.user)
+    if perfil.rol != 'bibliotecario' and not request.user.is_superuser:
+        return HttpResponseForbidden("No tiene permisos para ver el panel bibliotecario.")
 
     # Estadísticas generales
     total_libros = Libro.objects.count()
@@ -282,7 +285,7 @@ def bibliotecario_dashboard(request):
 @require_http_methods(["GET", "POST"])
 def bibliotecario_registrar_libro(request):
     """Vista para que un bibliotecario registre un nuevo libro."""
-    perfil, created = request.user.perfil.get_or_create()
+    perfil, created = PerfilUsuario.objects.get_or_create(user=request.user)
 
     if perfil.rol != 'bibliotecario' and not request.user.is_superuser:
         return HttpResponseForbidden("No tiene permisos para registrar libros.")
@@ -316,7 +319,7 @@ def bibliotecario_registrar_libro(request):
 @require_http_methods(["GET", "POST"])
 def bibliotecario_editar_libro(request, pk):
     """Vista para editar información de un libro."""
-    perfil, created = request.user.perfil.get_or_create()
+    perfil, created = PerfilUsuario.objects.get_or_create(user=request.user)
 
     if perfil.rol != 'bibliotecario' and not request.user.is_superuser:
         return HttpResponseForbidden("No tiene permisos para editar libros.")

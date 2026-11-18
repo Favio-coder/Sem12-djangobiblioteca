@@ -1,120 +1,169 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Biblioteca UNCP - Gestión Universitaria{% endblock %}
-
-{% block content %}
-<section class="hero-bg py-5 py-lg-8">
-    <div class="container">
-        <div class="row align-items-center gy-4 gy-lg-0">
-            <div class="col-lg-6 order-lg-first">
-                <h1 class="display-4 fw-bold mb-3">
-                    <i class="fas fa-book-reader me-3 text-golden"></i>Bienvenido a la Biblioteca UNCP
-                </h1>
-                <p class="lead mb-4">
-                    Tu acceso al conocimiento universitario. Explora nuestro catálogo, solicita préstamos y descubre
-                    recursos académicos.
-                </p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="{% url 'catalogo:lista_libros' %}" class="btn btn-primary-uncp btn-lg">
-                        <i class="fas fa-search me-2"></i>Explorar Catálogo
-                    </a>
-                    <a href="{% url 'catalogo:registro' %}" class="btn btn-golden btn-lg">
-                        <i class="fas fa-user-plus me-2"></i>Regístrate Ahora
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6 order-lg-last">
-                <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <div class="card card-libro h-100">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-primary-dark">
-                                    <i class="fas fa-books me-2"></i>+5,000 Libros
-                                </h5>
-                                <p class="card-text flex-grow-1 small text-muted">
-                                    Amplia colección académica
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card card-libro h-100">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-primary-dark">
-                                    <i class="fas fa-user-graduate me-2"></i>Estudiantes
-                                </h5>
-                                <p class="card-text flex-grow-1 small text-muted">
-                                    Más de 2,000 usuarios
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card card-libro h-100">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-primary-dark">
-                                    <i class="fas fa-calendar-check me-2"></i>Préstamos
-                                </h5>
-                                <p class="card-text flex-grow-1 small text-muted">
-                                    Devoluciones flexibles
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="card card-libro h-100">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title text-primary-dark">
-                                    <i class="fas fa-shield-alt me-2"></i>Segura
-                                </h5>
-                                <p class="card-text flex-grow-1 small text-muted">
-                                    Protección de datos
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% extends 'base.html' %}{% load static %}{% block title %}Biblioteca UNCP · El
+conocimiento comienza aquí{% endblock %}{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="reveal">
+      <span class="eyebrow">Biblioteca universitaria</span>
+      <h1>El conocimiento comienza aquí</h1>
+      <p class="hero-copy">
+        Explora, descubre y accede a los recursos académicos de la Biblioteca
+        UNCP. Tu espacio digital para aprender e investigar.
+      </p>
+      <div class="hero-actions">
+        <a
+          class="button button-primary"
+          href="{% url 'catalogo:lista_libros' %}"
+          >Explorar catálogo →</a
+        ><a class="button button-outline" href="#servicios"
+          >Conoce nuestros servicios</a
+        >
+      </div>
+      <form
+        class="searchbar"
+        action="{% url 'catalogo:lista_libros' %}"
+        method="get"
+      >
+        <span class="search-icon">⌕</span
+        ><input
+          name="query"
+          placeholder="¿Qué quieres aprender hoy?"
+          aria-label="Buscar libros"
+        /><button class="button button-small" type="submit">Buscar</button>
+      </form>
     </div>
+    <div class="hero-visual reveal">
+      <img
+        class="hero-photo"
+        src="{% static 'img/biblioteca-hero.svg' %}"
+        alt="Interior luminoso de una biblioteca universitaria con estanterías y mesas de estudio"
+        onerror="
+          this.style.display = 'none';
+          this.parentElement.classList.add('hero-fallback');
+        "
+      />
+      <div class="hero-note">
+        <strong>Un espacio para ti</strong>Lee, investiga y crea nuevas ideas
+      </div>
+    </div>
+  </div>
+  <div class="container stats">
+    <div class="stat">
+      <strong>{{ libros_destacados|length }}+</strong
+      ><span>Libros destacados</span>
+    </div>
+    <div class="stat">
+      <strong>{{ categorias|length }}+</strong
+      ><span>Categorías académicas</span>
+    </div>
+    <div class="stat">
+      <strong>24/7</strong><span>Catálogo disponible</span>
+    </div>
+    <div class="stat">
+      <strong>15 días</strong><span>Préstamo estándar</span>
+    </div>
+  </div>
 </section>
-
-<!-- Sección: Libros Destacados -->
-<section class="py-5">
-    <div class="container">
-        <div class="section-header text-center mb-4">
-            <h2><i class="fas fa-star me-2 text-golden"></i>Destacados</h2>
-            <p class="text-muted">Libros populares y recién llegados</p>
-        </div>
-        <div class="row g-4">
-            {% for libro in libros_destacados %}
-            <div class="col-md-3 col-6">
-                <div class="card card-libro h-100 shadow-sm">
-                    <img src="{% if libro.imagen %}{{ libro.imagen.url }}{% else %}{% static 'catalogo/images/placeholder-libro.jpg' %}{% endif %}"
-                        class="card-img-top" alt="{{ libro.titulo }}">
-                    <div class="card-body d-flex flex-column">
-                        <h6 class="card-title text-truncate small-line-height">{{ libro.titulo }}</h6>
-                        <p class="card-text text-muted small-line-height fst-italic">
-                            {{ libro.autor }}
-                        </p>
-                        <div class="mt-auto d-flex justify-content-between">
-                            <span class="badge badge-uncp">{{ libro.get_estatus_disponibilidad }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="estado-vacio">
-                    <i class="fas fa-book-open fa-3x mb-3 opacity-50"
-                        style="color: #a0aec0;"></i>
-                    <h4 class="text-muted">No hay libros disponibles</h4>
-                    <p class="text-muted">Intenta buscar libros con diferentes criterios.</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+<section class="page-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="kicker">Para descubrir</span>
+        <h2>Libros destacados</h2>
+        <p>Una selección para acompañar tus próximos proyectos.</p>
+      </div>
+      <a class="link-arrow" href="{% url 'catalogo:lista_libros' %}"
+        >Ver todo el catálogo →</a
+      >
     </div>
+    <div class="book-grid">
+      {% for libro in libros_destacados %}
+      <article class="book-card">
+        <div class="book-cover"><span>{{ libro.titulo|default:'Libro sin título' }}</span></div>
+        <div class="book-body">
+          <h3>{{ libro.titulo|default:'Libro sin título'|truncatechars:48 }}</h3>
+          <p class="book-author">{{ libro.autor }}</p>
+          <div class="book-meta">
+            <span
+              class="status {% if not libro.disponible %}status-unavailable{% endif %}"
+              >{{ libro.estatus_disponibilidad }}</span
+            ><a
+              class="link-arrow"
+              href="{% url 'catalogo:detalle_libro' libro.pk %}"
+              aria-label="Ver detalles de {{ libro.titulo }}"
+              >Ver →</a
+            >
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <div class="empty-state">
+        <strong>Aún no hay libros destacados</strong>El catálogo se actualizará
+        pronto.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="page-section service-band" id="servicios">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="kicker" style="color: var(--gold)">A tu alcance</span>
+        <h2>Servicios bibliotecarios</h2>
+        <p>Todo lo que necesitas para avanzar en tus ideas.</p>
+      </div>
+    </div>
+    <div class="service-grid">
+      <article class="service-card">
+        <div class="service-icon">⌕</div>
+        <h3>Catálogo digital</h3>
+        <p>
+          Encuentra libros por título, autor o categoría desde cualquier
+          dispositivo.
+        </p>
+        <a href="{% url 'catalogo:lista_libros' %}">Explorar catálogo →</a>
+      </article>
+      <article class="service-card">
+        <div class="service-icon">↗</div>
+        <h3>Préstamos bibliográficos</h3>
+        <p>
+          Solicita tus libros disponibles y consulta tus fechas de devolución.
+        </p>
+        <a href="{% url 'catalogo:registro' %}">Crear una cuenta →</a>
+      </article>
+      <article class="service-card">
+        <div class="service-icon">✦</div>
+        <h3>Recursos académicos</h3>
+        <p>
+          Organiza tus lecturas y descubre nuevas referencias para investigar.
+        </p>
+        <a href="{% url 'catalogo:lista_libros' %}">Ver recursos →</a>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="page-section" id="nosotros">
+  <div class="container about-grid">
+    <div>
+      <img
+        class="about-image"
+        src="{% static 'img/biblioteca-hero.svg' %}"
+        alt="Estanterías y espacios de lectura en una biblioteca moderna"
+        loading="lazy"
+      />
+    </div>
+    <div class="about-copy">
+      <span class="kicker">Nuestra biblioteca</span>
+      <h2>Un espacio para aprender e investigar</h2>
+      <p>
+        La Biblioteca UNCP conecta a la comunidad universitaria con información
+        confiable y oportunidades para seguir aprendiendo. Explora el catálogo,
+        encuentra tu próxima lectura y haz que cada consulta cuente.
+      </p>
+      <a class="button button-primary" href="{% url 'catalogo:lista_libros' %}"
+        >Conocer el catálogo</a
+      >
+    </div>
+  </div>
 </section>
 {% endblock %}

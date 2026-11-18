@@ -88,7 +88,7 @@ class Libro(models.Model):
         return f"{self.titulo} - {self.autor}"
 
     def get_absolute_url(self):
-        return reverse('catalogo:libro_detalle', kwargs={'pk': self.pk})
+        return reverse('catalogo:detalle_libro', kwargs={'pk': self.pk})
 
     @property
     def es_reciente(self):
