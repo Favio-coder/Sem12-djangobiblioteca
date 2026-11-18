@@ -148,7 +148,7 @@ class Prestamo(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.libro.titulo} → {self.user.username} ({'Devuelto' if self.devuelto else 'Pendiente'})"
+        return f"{self.libro.titulo} → {self.usuario.username} ({'Devuelto' if self.devuelto else 'Pendiente'})"
 
     @property
     def esta_vencido(self):
